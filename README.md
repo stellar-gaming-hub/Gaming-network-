@@ -19,3 +19,11 @@ git clone [https://github.com/stellar-gaming-hub/Gaming-network-.git](https://gi
 
 # Install dependencies
 npm install
+```
+
+## Signed Game Webhooks
+Configure `GAME_WEBHOOK_SECRET` with a shared secret for trusted game instances. Sign the exact request body bytes using HMAC-SHA256 and send the hex digest in the `x-game-signature` header as `sha256=<digest>`.
+
+Mount `createGameWebhookRouter` from `src/game-webhook.js` at the game webhook path and provide the session-state updater. The router reads `x-game-signature`, verifies the raw body, and only then parses JSON or calls the updater. Mount it before any global `express.json()` middleware, and keep the raw body intact; parsing and re-serializing it changes the bytes and invalidates the signature.
+
+Run the test suite with `npm test`.
